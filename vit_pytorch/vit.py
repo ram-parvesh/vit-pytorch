@@ -93,7 +93,7 @@ class ViT(nn.Module):
         assert pool in {'cls','mean'}, 'pool type must be either cls (cls token) or mean (mean pooling)'
 
         self.to_patch_embedding = nn.Sequential(
-            Rearrange('b c (h p1) -> b (h w) (p1 p2 c)',p1 = patch_height,p2 = patch_width),
+            Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)',p1 = patch_height,p2 = patch_width),
             nn.Linear(patch_dim,dim),
         )
 
@@ -126,5 +126,5 @@ class ViT(nn.Module):
         x = x.mean(dim = 1) if self.pool == 'mean' else x[:,0]
 
         x = self.to_latent(x)
-        return self.mlp_head(x)
+        return self.mlp_head(x )
 
